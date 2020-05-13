@@ -1,0 +1,280 @@
+Script started on Wed 01 Apr 2020 03:44:38 PM EDT
+tuser@tutor-vserver:~$ ssh [K mikehj24@users.cs.umb.edu
+mikehj24@users.cs.umb.edu's password: 
+Welcome to Ubuntu 16.04.6 LTS (GNU/Linux 4.4.0-171-generic x86_64)
+
+65 packages can be updated.
+59 updates are security updates.
+
+
+6 updates could not be installed automatically. For more details,
+see /var/log/unattended-upgrades/unattended-upgrades.log
+
+Authorized users only.
+
+Contact: operator@cs.umb.edu or 617-287-6480
+
+
+Mon Feb 24 04:17:07 EST 2020
+- Account applications are being processed at least daily.
+- Mail lists are coming back up to speed; simple lists
+  are now known on the new mx1.  Fancy pipeline aliases,
+  such as the operator queue, should be available again
+  after some tuning.
+
+You have new mail.
+Last login: Wed Apr  1 15:46:55 2020 from 75.69.60.201
+mikehj24@itserver6:~$ cd cs341/part[K[K[K[Kmp2_lini[Kux/part1
+mikehj24@itserver6:~/cs341/mp2_linux/part1$ 
+mikehj24@itserver6:~/cs341/mp2_linux/part1$ pwd
+/home/mikehj24/cs341/mp2_linux/part1
+mikehj24@itserver6:~/cs341/mp2_linux/part1$ cat count.s
+	.data
+countChar:
+	.long 0 		
+	.text
+	.globl count
+count:
+	pushl %ebp  		
+	movl %esp, %ebp
+	subl $8, %esp  		
+	movl 8(%ebp), %eax  	
+	movl 12(%ebp), %ecx 	
+	movl %ecx, countChar 	
+	movl $0, %edx  		
+	jmp strLoop
+strLoop:
+	movb (%eax), %ecx    
+	cmpl $0, %ecx        
+	jz done             
+	cmpl countChar, %ecx 
+	je increment         	
+	addl $1, %eax        
+	jmp strLoop	     
+increment:
+	addl $1, %edx        
+	addl $1, %eax        
+	jmp strLoop	     
+
+
+done:
+	movl %edx, %eax     
+	movl %ebp, %esp     
+	popl %ebp           
+	ret                 
+	.end                
+	
+mikehj24@itserver6:~/cs341/mp2_linux/part1$ cat countc.c
+/* countc.c: call assembly soubroutine to count c's in string 
+    bob wilson
+      4/28/2016
+     modifed by Ron Cheung
+      3/2/2020
+ */
+
+#include <stdio_1.h>
+extern int count(char *string, char c);
+
+int main(void)
+{
+  char s[100];
+  char c;
+  printf("Enter a string of characters:\n");
+  scanf("%s", s);
+  printf("Enter a character to count:\n");
+  scanf("%c", &c);
+  printf("\nThe number of %c's in the string %s is %d\n", c, s, count(s, 
+c));
+  return 0;
+}
+mikehj24@itserver6:~/cs341/mp2_linux/part1$ make clean
+rm -f *.o *.syms *.lnx core syms
+mikehj24@itserver6:~/cs341/mp2_linux/part1$ make A=count
+as --32 -o count.o count.s
+count.s: Assembler messages:
+count.s:16: Warning: using `%cl' instead of `%ecx' due to `b' suffix
+gcc -gdwarf-2 -gstrict-dwarf -march=i586 -m32 -fno-builtin -fno-stack-protector -nostdlib     -c -Wall -I/home/cheungr/serl/tutor-linux/include -c -o countc.o countc.c
+ld -m elf_i386 -N -Ttext 100100 -o count.lnx \
+	/home/cheungr/serl/tutor-linux/libc_tmp/startup0.o /home/cheungr/serl/tutor-linux/libc_tmp/startup.o \
+	countc.o count.o /home/cheungr/serl/tutor-linux/libc_tmp/libc.a
+rm -f syms;nm -n count.lnx>count.syms;ln -s count.syms syms
+mikehj24@itserver6:~/cs341/mp2_linux/part1$ ls -al
+total 60
+drwxr-sr-x 2 mikehj24 cs341-1G  4096 Apr  1 15:52 .
+drwxr-sr-x 5 mikehj24 cs341-1G  4096 Mar 26 18:54 ..
+-rw-r--r-- 1 mikehj24 cs341-1G   463 Apr  1 08:35 countc.c
+-rw-r--r-- 1 mikehj24 cs341-1G  2896 Apr  1 15:52 countc.o
+-rwxr-xr-x 1 mikehj24 cs341-1G 19312 Apr  1 15:52 count.lnx
+-rw-r--r-- 1 mikehj24 cs341-1G   684 Apr  1 15:52 count.o
+-rw-r--r-- 1 mikehj24 cs341-1G   574 Apr  1 14:29 count.s
+-rw-r--r-- 1 mikehj24 cs341-1G   768 Apr  1 15:52 count.syms
+-rw-r--r-- 1 mikehj24 cs341-1G  2265 Apr  1 08:35 makefile
+-rw-r--r-- 1 mikehj24 cs341-1G   179 Apr  1 08:35 sum10c.c
+-rw-r--r-- 1 mikehj24 cs341-1G   424 Apr  1 08:35 sum10.s
+lrwxrwxrwx 1 mikehj24 cs341-1G    10 Apr  1 15:52 syms -> count.syms
+mikehj24@itserver6:~/cs341/mp2_linux/part1$ ls -lg
+total 52
+-rw-r--r-- 1 cs341-1G   463 Apr  1 08:35 countc.c
+-rw-r--r-- 1 cs341-1G  2896 Apr  1 15:52 countc.o
+-rwxr-xr-x 1 cs341-1G 19312 Apr  1 15:52 count.lnx
+-rw-r--r-- 1 cs341-1G   684 Apr  1 15:52 count.o
+-rw-r--r-- 1 cs341-1G   574 Apr  1 14:29 count.s
+-rw-r--r-- 1 cs341-1G   768 Apr  1 15:52 count.syms
+-rw-r--r-- 1 cs341-1G  2265 Apr  1 08:35 makefile
+-rw-r--r-- 1 cs341-1G   179 Apr  1 08:35 sum10c.c
+-rw-r--r-- 1 cs341-1G   424 Apr  1 08:35 sum10.s
+lrwxrwxrwx 1 cs341-1G    10 Apr  1 15:52 syms -> count.syms
+mikehj24@itserver6:~/cs341/mp2_linux/part1$ ls
+countc.c  count.lnx  count.s	 makefile  sum10.s
+countc.o  count.o    count.syms  sum10c.c  syms
+mikehj24@itserver6:~/cs341/mp2_linux/part1$ logout
+Connection to users.cs.umb.edu closed.
+tuser@tutor-vserver:~$ scp mikehj24@users.cs.umb.edu:cs341/mp2_linux/part1/count .* .
+mikehj24@users.cs.umb.edu's password: 
+count.lnx                                       0%    0     0.0KB/s   --:-- ETAcount.lnx                                     100%   19KB  18.9KB/s   00:00    
+count.o                                         0%    0     0.0KB/s   --:-- ETAcount.o                                       100%  684     0.7KB/s   00:00    
+count.s                                         0%    0     0.0KB/s   --:-- ETAcount.s                                       100%  574     0.6KB/s   00:00    
+count.syms                                      0%    0     0.0KB/s   --:-- ETAcount.syms                                    100%  768     0.8KB/s   00:00    
+tuser@tutor-vserver:~$ mtip -f count.lnx
+For command help, type ~?
+For help on args, rerun without args
+Code starts at 0x100100
+Using board # 1 
+Please type <CR> to confirm console setting: 
+Setting console dev to COM2Console: colour EGA+ 80x25
+COM1 at 0x03f8 (irq = 4) is a 16550A
+COM2 at 0x02f8 (irq = 3) is a 16550A
+
+                 Welcome to UMB Tutor for the PC
+   UMB Tutor is a 32-bit protected-mode PC debugger/downloader,
+       based on Linux, UMB Tutor for m68k, and remote gdb.
+UMB Tutor is free software and you are welcome to distribute copies
+of it under certain conditions.  There is no warranty for this program.
+The copyright and warranty provisions follow the Gnu general public
+license, available for view in gdb and elsewhere.  Full sources available.
+--bugs, suggestions, questions to eoneil@cs.umb.edu
+
+Exception 3 at EIP=00057a9b: Breakpoint
+Tutor> ~downloading count.lnx
+
+.......Done.
+
+Download done, setting EIP to 100100.
+Tutor> go 100100
+Enter a string of characters:
+anaconda
+Enter a character to count:
+c
+The number of c's in the string anaconda is 1
+Exception 3 at EIP=00100110: Breakpoint
+Tutor> go 100100
+Enter a string of characters:
+bookshelf
+Enter a character to count:
+o
+The number of o's in the string bookshelf is 2
+Exception 3 at EIP=00100110: Breakpoint
+Tutor> go 100100
+Enter a string of characters:
+freeeeeeeeeee
+Enter a character to count:
+e
+The number of e's in the string freeeeeeeeeee is 11
+Exception 3 at EIP=00100110: Breakpoint
+Tutor> go 100100
+Enter a string of characters:
+aaabbbbbbbbbbbbbbbbbbbbbbbbbbbb
+Enter a character to count:
+b
+The number of b's in the string aaabbbbbbbbbbbbbbbbbbbbbbbbbbbb is 28
+Exception 3 at EIP=00100110: Breakpoint
+Tutor> gdb
+
+Setting gdb dev to COM1, starting gdb (CTRL-C to abort).
+Enter a string of characters:
+aaaaaaaab
+Enter a character to count:
+a
+Tutor> 
+
+]0;tuser@tutor-vserver: ~tuser@tutor-vserver:~$ gdb count.lnx
+GNU gdb (GDB) 7.0.1-debian
+Copyright (C) 2009 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+and "show warranty" for details.
+This GDB was configured as "i486-linux-gnu".
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>...
+Reading symbols from /home/tuser/count.lnx...done.
+(gdb) tar rem /dev/ttyS0 
+Remote debugging using /dev/ttyS0
+0x00100100 in _start ()
+(gdb) i reg
+eax            0x1	1
+ecx            0x6967c	431740
+edx            0x0	0
+ebx            0x0	0
+esp            0x5788c	0x5788c
+ebp            0x57890	0x57890
+esi            0x13e10	81424
+edi            0x51ffc	335868
+eip            0x100100	0x100100 <_start>
+eflags         0x206	[ PF IF ]
+cs             0x10	16
+ss             0x18	24
+ds             0x18	24
+es             0x18	24
+fs             0x18	24
+gs             0x18	24
+(gdb) b coun[K[K[K[K[K[Kx/128i[K[K[K[K[K[Kb count
+Breakpoint 1 at 0x1001c5
+(gdb) disass
+Dump of assembler code for function _start:
+0x00100100 <_start+0>:	mov    $0x3ffff0,%esp
+0x00100105 <_start+5>:	mov    $0x0,%ebp
+0x0010010a <_start+10>:	call   0x100110 <_startupc>
+0x0010010f <_start+15>:	int3   
+End of assembler dump.
+(gdb) c
+Continuing.
+
+Breakpoint 1, 0x001001c5 in count ()
+(gdb) info breakpoint
+Num     Type           Disp Enb Address    What
+1       breakpoint     keep y   0x001001c5 <count+6>
+	breakpoint already hit 1 time
+(gdb) b increment
+Breakpoint 2 at 0x1001ec
+(gdb) c
+Continuing.
+
+Breakpoint 2, 0x001001ec in increment ()
+(gdb) info breakpoio[Knt
+Num     Type           Disp Enb Address    What
+1       breakpoint     keep y   0x001001c5 <count+6>
+	breakpoint already hit 1 time
+2       breakpoint     keep y   0x001001ec <increment>
+	breakpoint already hit 1 time
+(gdb) c
+Continuing.
+
+Breakpoint 2, 0x001001ec in increment ()
+(gdb) b increment
+Note: breakpoint 2 also set at pc 0x1001ec.
+Breakpoint 3 at 0x1001ec
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [Remote target] will be killed.
+
+Quit anyway? (y or n) y
+]0;tuser@tutor-vserver: ~tuser@tutor-vserver:~$ exit
+exitTutor> 
+Quit handler: 
+killing process 1840 Leaving board #1
+tuser@tutor-vserver:~$ exit
+exit
+
+Script done on Wed 01 Apr 2020 04:03:06 PM EDT

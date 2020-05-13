@@ -1,0 +1,78 @@
+
+]0;tuser@tutor-vserver: ~tuser@tutor-vserver:~$ gdb count.lnx
+GNU gdb (GDB) 7.0.1-debian
+Copyright (C) 2009 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+and "show warranty" for details.
+This GDB was configured as "i486-linux-gnu".
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>...
+Reading symbols from /home/tuser/count.lnx...done.
+(gdb) tar rem /dev/ttyS0 
+Remote debugging using /dev/ttyS0
+0x00100100 in _start ()
+(gdb) i reg
+eax            0x1	1
+ecx            0x6967c	431740
+edx            0x0	0
+ebx            0x0	0
+esp            0x5788c	0x5788c
+ebp            0x57890	0x57890
+esi            0x13e10	81424
+edi            0x51ffc	335868
+eip            0x100100	0x100100 <_start>
+eflags         0x206	[ PF IF ]
+cs             0x10	16
+ss             0x18	24
+ds             0x18	24
+es             0x18	24
+fs             0x18	24
+gs             0x18	24
+(gdb) b coun[K[K[K[K[K[Kx/128i[K[K[K[K[K[Kb count
+Breakpoint 1 at 0x1001c5
+(gdb) disass
+Dump of assembler code for function _start:
+0x00100100 <_start+0>:	mov    $0x3ffff0,%esp
+0x00100105 <_start+5>:	mov    $0x0,%ebp
+0x0010010a <_start+10>:	call   0x100110 <_startupc>
+0x0010010f <_start+15>:	int3   
+End of assembler dump.
+(gdb) c
+Continuing.
+
+Breakpoint 1, 0x001001c5 in count ()
+(gdb) info breakpoint
+Num     Type           Disp Enb Address    What
+1       breakpoint     keep y   0x001001c5 <count+6>
+	breakpoint already hit 1 time
+(gdb) b increment
+Breakpoint 2 at 0x1001ec
+(gdb) c
+Continuing.
+
+Breakpoint 2, 0x001001ec in increment ()
+(gdb) info breakpoio[Knt
+Num     Type           Disp Enb Address    What
+1       breakpoint     keep y   0x001001c5 <count+6>
+	breakpoint already hit 1 time
+2       breakpoint     keep y   0x001001ec <increment>
+	breakpoint already hit 1 time
+(gdb) c
+Continuing.
+
+Breakpoint 2, 0x001001ec in increment ()
+(gdb) b increment
+Note: breakpoint 2 also set at pc 0x1001ec.
+Breakpoint 3 at 0x1001ec
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [Remote target] will be killed.
+
+Quit anyway? (y or n) y
+]0;tuser@tutor-vserver: ~tuser@tutor-vserver:~$ exit
+exit
+
+
